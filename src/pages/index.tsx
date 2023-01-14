@@ -6,6 +6,13 @@ import { api } from "../utils/api";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const utils = api.useContext();
+  const examples = api.example.getAll.useQuery();
+  const mutation = api.example.makeOne.useMutation({
+    onSettled() {
+      return utils.example.getAll.invalidate();
+    },
+  });
 
   return (
     <>
@@ -46,6 +53,21 @@ const Home: NextPage = () => {
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
+          <button
+            onClick={() => mutation.mutate()}
+            className="rounded-xl bg-white/10 p-4 text-xl text-white
+          hover:bg-white/20"
+          >
+            Create Example record
+          </button>
+          {examples.data && examples.data.length !== 0 && (
+            <div className="rounded bg-emerald-200/10 p-4 pl-6 text-white">
+              <p>Button was clicked at:</p>
+              <ul className="list-disc">
+                {examples.data.map(({ createdAt }) => <li>{createdAt.toLocaleString()}</li>)}
+              </ul>
+            </div>
+          )}
         </div>
       </main>
     </>

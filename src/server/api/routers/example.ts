@@ -13,4 +13,7 @@ export const exampleRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.example.findMany();
   }),
+  makeOne: publicProcedure.mutation(({ ctx }) => {
+    return ctx.prisma.example.create({ data: {} });
+  }),
 });
